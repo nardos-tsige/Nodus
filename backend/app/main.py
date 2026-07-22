@@ -14,6 +14,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import SQLModel, Session, select
 from datetime import datetime
+import os
 
 from .database import engine, get_session
 from .models import User, Token, UserCreate, UserRead
@@ -48,12 +49,21 @@ app = FastAPI(
 # CORS - Allows React frontend to talk to this backend
 # =========================================================
 
+# Get frontend URL from environment or use defaults
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://nodus.vercel.app")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",    # Vite dev server
-        "http://localhost:3000",    # Alternative dev server
-        "http://127.0.0.1:5173",    # Localhost alternative
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:5173",
+        FRONTEND_URL,
+        f"{FRONTEND_URL}/*",
+        "https://nodus.vercel.app",
+        "https://nodus.vercel.app/*",
+        "https://nodus-git-main.vercel.app",
+        "https://nodus-git-*.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -177,6 +187,7 @@ def get_me(
     Useful for testing authentication.
     """
     return current_user
+
 
 if __name__ == "__main__":
     import uvicorn
