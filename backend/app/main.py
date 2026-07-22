@@ -52,22 +52,20 @@ app = FastAPI(
 # Get frontend URL from environment or use defaults
 FRONTEND_URL = os.getenv("FRONTEND_URL", "https://nodus.vercel.app")
 
+# =========================================================
+# CORS - Allows React frontend to talk to this backend
+# =========================================================
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
         "http://localhost:3000",
         "http://127.0.0.1:5173",
-        FRONTEND_URL,
-        f"{FRONTEND_URL}/*",
         "https://nodus.vercel.app",
-        "https://nodus.vercel.app/*",
-        "https://nodus-git-main.vercel.app",
-        "https://nodus-git-*.vercel.app",
-        "https://nodus-frontend.vercel.app",          
-        "https://nodus-frontend.vercel.app/*",        
-        "https://nodus-frontend-*.vercel.app",        
-        "https://*.vercel.app",                       
+        "https://nodus-frontend.vercel.app",
+        "https://nodus-frontend-ecru.vercel.app",  # ← YOUR CURRENT FRONTEND URL
+        "https://*.vercel.app",                    # ← Allow ALL Vercel deployments
     ],
     allow_credentials=True,
     allow_methods=["*"],
