@@ -1,10 +1,10 @@
 // src/api/client.js
 import axios from 'axios'
 
-// ✅ Use environment variable with fallback for local development
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+//FORCED: Hardcode your backend URL
+const API_URL = 'https://nodus-backend-theta.vercel.app'
 
-console.log('🔗 API URL:', API_URL)  // Helpful for debugging
+console.log('🔗 API URL (hardcoded):', API_URL)
 
 const client = axios.create({
   baseURL: API_URL,
@@ -13,7 +13,7 @@ const client = axios.create({
   },
 })
 
-// Add token to every request if it exists
+// Add token to every request
 client.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token')
@@ -22,21 +22,7 @@ client.interceptors.request.use(
     }
     return config
   },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
-
-// Handle 401 responses (unauthorized)
-client.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token')
-      window.location.href = '/login'
-    }
-    return Promise.reject(error)
-  }
+  (error) => Promise.reject(error)
 )
 
 export const api = {
